@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
@@ -12,6 +12,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const prefersReducedMotion = useReducedMotion();
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
 
   const handleScroll = useCallback(() => {
     const scrolled = window.scrollY > 10;
@@ -30,6 +31,51 @@ const Header = () => {
     setIsMenuOpen(false);
   }, [pathname]);
 
+  // Close mobile menu when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        isMenuOpen &&
+        headerRef.current &&
+        !headerRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    // Add event listeners when menu is open
+    if (isMenuOpen) {
+      document.addEventListener(
+        "mousedown",
+        handleClickOutside as EventListener
+      );
+      document.addEventListener(
+        "touchstart",
+        handleClickOutside as EventListener
+      );
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    // Cleanup event listeners
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside as EventListener
+      );
+      document.removeEventListener(
+        "touchstart",
+        handleClickOutside as EventListener
+      );
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMenuOpen]);
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
@@ -45,6 +91,7 @@ const Header = () => {
 
   return (
     <motion.header
+      ref={headerRef}
       initial={prefersReducedMotion ? { y: 0 } : { y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -125,48 +172,66 @@ const Header = () => {
       {/* Mobile Navigation */}
       <AnimatePresence mode="wait">
         {isMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            role="navigation"
-            aria-label="Mobile navigation"
-            initial={
-              prefersReducedMotion ? { opacity: 1 } : { opacity: 0, height: 0 }
-            }
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden bg-primary-600/95 dark:bg-primary-800/95 backdrop-blur-md border-t border-white/10"
-          >
-            <div className="px-4 py-2 space-y-1">
-              {navItems.map((item, index) => (
-                <motion.div
-                  key={item.name}
-                  initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Link
-                    href={item.href}
-                    prefetch={true}
-                    className={`block px-4 py-2 rounded-lg font-medium transition-colors ${
-                      isCurrentPage(item.href)
-                        ? "bg-accent-500 text-gray-dark"
-                        : "text-white hover:bg-white/10"
-                    }`}
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                    }}
-                    aria-current={isCurrentPage(item.href) ? "page" : undefined}
+          <>
+            {/* Overlay - Click to close */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+              onClick={() => setIsMenuOpen(false)}
+              aria-hidden="true"
+            />
+
+            {/* Mobile Menu */}
+            <motion.div
+              id="mobile-menu"
+              role="navigation"
+              aria-label="Mobile navigation"
+              initial={
+                prefersReducedMotion
+                  ? { opacity: 1 }
+                  : { opacity: 0, height: 0 }
+              }
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden bg-primary-600/95 dark:bg-primary-800/95 backdrop-blur-md border-t border-white/10 relative z-50"
+            >
+              <div className="px-4 py-2 space-y-1">
+                {navItems.map((item, index) => (
+                  <motion.div
+                    key={item.name}
+                    initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
                   >
-                    {item.name}
-                  </Link>
-                </motion.div>
-              ))}
-              <div className="pt-2 pb-4">
-                <ThemeToggle />
+                    <Link
+                      href={item.href}
+                      prefetch={true}
+                      className={`block px-4 py-2 rounded-lg font-medium transition-colors ${
+                        isCurrentPage(item.href)
+                          ? "bg-accent-500 text-gray-dark"
+                          : "text-white hover:bg-white/10"
+                      }`}
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                      }}
+                      aria-current={
+                        isCurrentPage(item.href) ? "page" : undefined
+                      }
+                    >
+                      {item.name}
+                    </Link>
+                  </motion.div>
+                ))}
+                <div className="pt-2 pb-4">
+                  <ThemeToggle />
+                </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.header>
