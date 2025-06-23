@@ -397,3 +397,71 @@ a,
     transform: translateY(0);
   }
 }
+
+/* Mobile touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .hover\:scale-105:hover {
+    transform: none;
+  }
+
+  /* Ensure buttons are large enough for touch */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve touch target sizes */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Touch-specific styles */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Active states for mobile */
+.mobile-active:active {
+  transform: scale(0.95) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Ensure touch events work on mobile */
+@media (pointer: coarse) {
+  .mobile-active {
+    cursor: pointer;
+  }
+  
+  .mobile-active:active {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .mobile-active:active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Prevent double-tap zoom on buttons */
+button {
+  touch-action: manipulation;
+}
+
+/* iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  .ios-button-fix {
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+}
