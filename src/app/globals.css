@@ -1,0 +1,399 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+
+:root {
+  /* Base colors */
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+
+  /* Color system - Light mode */
+  --primary-color: #5a67d8;
+  --secondary-color: #b794f4;
+  --accent-color: #f6e05e;
+  --text-color: #111827;
+  --text-muted: #6b7280;
+  --background-color: #ffffff;
+  --surface-color: #f9fafb;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  /* Animation timings */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+
+  /* Loading animations */
+  --shimmer-duration: 1.5s;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  transition: background 0.3s, color 0.3s;
+}
+
+html.dark {
+  /* Color system - Dark mode */
+  --primary-color: #4c51bf;
+  --secondary-color: #9f7aea;
+  --accent-color: #d69e2e;
+  --text-color: #f3f4f6;
+  --text-muted: #9ca3af;
+  --background-color: #111827;
+  --surface-color: #1f2937;
+  --border-color: #374151;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+}
+
+html.dark body {
+  color: var(--text-color) !important;
+  background: var(--background-color) !important;
+}
+
+html.dark .gradient-animation {
+  background: linear-gradient(-45deg, #232946, #434190, #1f2937, #232946);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* System preference dark mode - only applies when manual dark mode is not set */
+@media (prefers-color-scheme: dark) {
+  html:not(.light):not(.dark) {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+
+  html:not(.light):not(.dark) body {
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgb(var(--background-end-rgb))
+      )
+      rgb(var(--background-start-rgb));
+    color: rgb(var(--foreground-rgb));
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #5a67d8;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4c51bf;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4c51bf;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+a,
+.card,
+.hover-effect {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom animations */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.gradient-animation {
+  background: linear-gradient(-45deg, #5a67d8, #b794f4, #f6e05e, #5a67d8);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(30, 41, 59, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(30, 41, 59, 0.3);
+}
+
+/* Hover glow effect */
+.glow-on-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-on-hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.dark .glow-on-hover::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+}
+
+.glow-on-hover:hover::before {
+  left: 100%;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Form field styles for dark mode */
+.form-input {
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+}
+
+/* Keyboard navigation focus styles */
+.keyboard-nav a:focus,
+.keyboard-nav button:focus,
+.keyboard-nav input:focus,
+.keyboard-nav select:focus,
+.keyboard-nav textarea:focus {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 4px rgba(90, 103, 216, 0.2) !important;
+}
+
+/* Loading skeleton screen */
+.skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    var(--surface-color) 25%,
+    var(--border-color) 50%,
+    var(--surface-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Rotating text animations */
+.rotating-text-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.rotating-text-word {
+  backface-visibility: hidden;
+  transform-origin: center center;
+}
+
+/* Enhanced text shadow for better readability */
+.text-shadow-glow {
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.dark .text-shadow-glow {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Blinking cursor animation */
+@keyframes blink-cursor {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.blinking-cursor {
+  animation: blink-cursor 1.2s infinite;
+}
+
+/* Gradient text styling */
+.gradient-text {
+  background: linear-gradient(135deg, #f59e0b, #f97316, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-text-shift 3s ease infinite;
+}
+
+@keyframes gradient-text-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Fallback for browsers that don't support background-clip: text */
+@supports not (-webkit-background-clip: text) {
+  .gradient-text {
+    color: #f59e0b;
+  }
+}
+
+/* Shimmer loading animation */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer var(--shimmer-duration) infinite linear;
+}
+
+/* Enhanced loading states */
+.loading-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Responsive loading improvements */
+@media (prefers-reduced-motion: reduce) {
+  .animate-shimmer,
+  .loading-skeleton {
+    animation: none;
+  }
+
+  .gradient-animation {
+    animation: none;
+  }
+
+  .blinking-cursor {
+    animation: none;
+  }
+}
+
+/* Performance optimizations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Smooth transitions for better UX */
+.transition-all-smooth {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Loading state improvements */
+.loading-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
