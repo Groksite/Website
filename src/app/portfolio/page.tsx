@@ -15,16 +15,9 @@ import Image from "next/image";
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState("All");
 
-  // Handle filter change with mobile-friendly event handling
+  // Handle filter change
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
-  };
-
-  // Mobile-friendly click handler
-  const handleButtonClick = (filter: string) => (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleFilterChange(filter);
   };
 
   const filters = ["All", "Templates", "Canva", "UI/UX", "Branding"];
@@ -229,36 +222,25 @@ const Portfolio = () => {
       <section className="py-16">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+          <div
             className="flex flex-wrap justify-center gap-4 mb-12"
+            style={{ position: "relative", zIndex: 10 }}
           >
             {filters.map((filter) => (
-              <motion.button
+              <button
                 key={filter}
-                type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleButtonClick(filter)}
-                onTouchEnd={handleButtonClick(filter)}
-                className={`px-6 py-3 min-h-[44px] min-w-[44px] rounded-full font-medium transition-all duration-300 touch-manipulation select-none mobile-active cursor-pointer ${
+                className={`portfolio-filter-btn px-6 py-3 min-h-[44px] min-w-[44px] rounded-full font-medium cursor-pointer border-0 outline-0 transition-all duration-200 ${
                   activeFilter === filter
                     ? "bg-accent-500 text-gray-dark shadow-lg"
-                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-md active:bg-gray-200 dark:active:bg-gray-600"
+                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-md"
                 }`}
-                style={{
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation',
-                  userSelect: 'none',
-                  WebkitUserSelect: 'none',
-                }}
+                onClick={() => setActiveFilter(filter)}
+                onTouchEnd={() => setActiveFilter(filter)}
               >
                 {filter}
-              </motion.button>
+              </button>
             ))}
-          </motion.div>
+          </div>
 
           {/* Projects Grid */}
           <AnimatePresence mode="wait">
