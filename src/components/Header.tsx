@@ -173,13 +173,13 @@ const Header = () => {
       <AnimatePresence mode="wait">
         {isMenuOpen && (
           <>
-            {/* Overlay - Click to close */}
+            {/* Overlay - Click to close (starts below header) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+              className="fixed top-16 left-0 right-0 bottom-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
               onClick={() => setIsMenuOpen(false)}
               aria-hidden="true"
             />
